@@ -1,0 +1,17 @@
+﻿@page "/counter"
+@page "/counter/{step:int}"
+
+<PageTitle>Counter</PageTitle>
+
+<div @onclick="onDivClic" @attributes=@parametrosExtra>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+Step :<input type="text" @bind="step" />  
+<br />
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+
+</div>
