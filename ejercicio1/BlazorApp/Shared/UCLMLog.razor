@@ -1,0 +1,38 @@
+﻿<h3>UCLMLog</h3>
+
+
+<div class="card" @onclick="@onDivClic">
+    <div class="card-header">
+        <h3>@Titulo</h3>
+        @HeaderTemplate
+        </div>
+    <div class="card-body">
+        <ul  class="list-group">
+            @if (Items != null && Items.Count > 0)
+            {
+                @foreach (var item in Items)
+                {
+                    <li class="List-group-item">@ChildContent(item)</li>
+                }
+            }
+        </ul>
+    </div>
+    
+</div>
+
+@code {
+
+
+    [Parameter] public string? Titulo { get; set; }
+    [Parameter] public List<string>? Items { get; set; }
+    [Parameter] public RenderFragment<string>? ChildContent { get; set; }
+    [Parameter] public RenderFragment? HeaderTemplate { get; set; }
+    [Parameter] public EventCallback<int> OnClick { get; set; }
+
+    private void onDivClic()
+    {
+        if (OnClick.HasDelegate)
+            OnClick.InvokeAsync();
+    }
+
+}

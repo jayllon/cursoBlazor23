@@ -9,26 +9,82 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+Bienvenido al ejercicio del Curso
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+<br />
+Este Counter tiene un evento de mostrar valor al clicar
+<br>
+<Counter @ref=@counter step="5" OnClick="@mostrarValor" class="alert alert-info" style="border: 1px solid #000" />
 
-<Counter step="10" Onclick="@alertarIncremento" Onlclass="bg-success" style="font-size:2em:"/>
+<button class="btn btn-primary" @onclick="@alertarIncremento">Boton corporativo</button>
+<br />
+Este Counter no tiene ningun evento asociado
+<br />
+<Counter @ref=@counter step="5" class="alert alert-warning" style="border: 1px solid #000" />
+<br />
+Este Counter tiene asignado el evento de ejercicio 5, saca un mensaje cuando es multiplo de 3
+<Counter @ref=@counter step="5" MultiploTres="@mostrarValorMultiploTres" class="bg-succes" style="border: 1px solid #000" />
+Este Counter tiene asignado el evento de ejercicio 6, tiene enlazado count como parametro
+<Counter @ref=@counter step="5" @bind-Contador="@count" class="bg-succes" style="border: 1px solid #000" />
+<h2>Este es el valor del parametro count: @count</h2>
 
-<button class="btn btn-primary">Boton corporativo</button>
+<br />
+Esto es un UCLMLog, lo saco del Counter para entenderlo mejor
+<br />
+
+
+<div class="col-12 col-lg-6">
+    <UCLMLog Titulo="Log General" Items="@eventos" OnClick="aniadeEntradaLog">
+        <HeaderTemplate>
+            Esta es la prueba del HeaderTemplate
+        </HeaderTemplate>
+        <ChildContent>
+            <b>@context</b>
+        </ChildContent>
+    </UCLMLog>
+</div>
 
 
 @code {
+    Counter? counter;
+    int i = 15;
+
+    int count;
+
+  
+
+    List<string>? eventos;
+
+
     protected override void OnInitialized()
     {
-        js.InvokeVoidAsync("abreAlerta", "La has liado pollito desde una biblioteca");
-        js.InvokeVoidAsync("window.alert","La has liado pollito");
+        //js.InvokeVoidAsync("abreAlerta", "La has liado pollito desde una biblioteca");
+        //js.InvokeVoidAsync("window.alert","La has liado pollito");
+        count = 1000;
+        eventos = new List<string>();
+
+
     }
     private void alertarIncremento()
     {
         js.InvokeVoidAsync("window.alert", "Se ha incrementado el valor");
+        count = 10;
     }
 
+    private void mostrarValor(int valor)
+    {
+        js.InvokeVoidAsync("abreAlerta", "Ejercicio 4: valor es  " + valor);
+    }
+
+    private void mostrarValorMultiploTres(int valor)
+    {
+        js.InvokeVoidAsync("window.alert", $"Valor multiplo de tres: {valor}");
+    }
+
+    private void aniadeEntradaLog()
+    {
+        eventos.Add($"Nueva Entrada Log con Valor: {count}");
+    }
 
 
 }

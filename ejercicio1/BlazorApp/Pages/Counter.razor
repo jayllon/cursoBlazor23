@@ -3,15 +3,63 @@
 
 <PageTitle>Counter</PageTitle>
 
-<div @onclick="onDivClic" @attributes=@parametrosExtra>
+<div @onclick="@onDivClic" @attributes=@parametrosExtra @onclick:preventDefault>
 
-<h1>Counter</h1>
+    <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount</p>
+    <p role="status">Current count: @currentCount</p>
 
-Step :<input type="text" @bind="step" />  
-<br />
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+    <button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 
 </div>
+
+
+
+
+@code {
+
+
+    [Parameter] public int step { get; set; }
+    [Parameter] public EventCallback<int> OnClick { get; set; }
+    [Parameter] public EventCallback<int> MultiploTres { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? parametrosExtra { get; set; }
+    [Parameter] public EventCallback<int> ContadorChanged { get; set; }
+    [Parameter]
+    public int Contador
+    {
+        get { return currentCount; }
+        set { currentCount = value; }
+    }
+
+
+    private int currentCount = 0;
+    
+
+
+    protected override void OnInitialized()
+    {
+        if (step < 1) step = 1;
+    }
+
+    private async void IncrementCount()
+    {
+
+        currentCount = currentCount + step;
+        // Solo llamo si se invocó con este parametro
+        if (ContadorChanged.HasDelegate)
+            await ContadorChanged.InvokeAsync(currentCount);
+        if (currentCount % 3 == 0)
+            MultiploTres.InvokeAsync(currentCount);
+
+    }
+    private void onDivClic()
+    {
+        if (OnClick.HasDelegate)
+            OnClick.InvokeAsync(currentCount);
+    }
+
+
+
+    
+}

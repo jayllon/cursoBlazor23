@@ -1,0 +1,111 @@
+﻿@page "/formulario"
+@inject IJSRuntime js
+
+@using BlazorApp.Moldels;
+
+
+<h3>Formulario @titulo</h3>
+
+<div class="row">
+    <div class="col-12 col-lg-6">
+        @if (item != null)
+        {
+            <EditForm Model="@item" OnInvalidSubmit="@oninvalidform" OnValidSubmit="@onvalidsubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+
+
+
+                <div class="form-group">
+                    <label for="@nameof(Libro.Titulo)">@nameof(item.Titulo)</label>
+                    <InputText @bind-Value=@item.Titulo class="form-control" />
+                    <ValidationMessage For="@(()=>item.Titulo)" />
+                </div>
+
+
+
+                @*              <div class="form-group">
+            <label for="@nameof(item.Titulo)">@nameof(item.Titulo)</label>
+            <input type="text" @bind-value=@item.Titulo class="form-control" @bind-value:event="oninput" />
+            </div>*@
+
+
+
+                <div class="form-group">
+                    <label for="@nameof(Libro.Autor)">@nameof(item.Autor)</label>
+                    <InputText @bind-Value=@item.Autor class="form-control" />
+                </div>
+
+
+
+                <div class="form-group">
+                    <label for="@nameof(Libro.FechaPublicacion)">@nameof(item.FechaPublicacion)</label>
+                    <InputDate @bind-Value=@item.FechaPublicacion class="form-control" />
+                </div>
+
+
+
+                <div class="form-group">
+                    <label for="@nameof(Libro.Precio)">@nameof(item.Precio)</label>
+                    <InputNumber @bind-Value=@item.Precio class="form-control" />
+                    <ValidationMessage For="@(()=>item.Precio)" />
+                </div>
+
+
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" @bind-value=@item.Disponible>
+                    <label for="@nameof(Libro.Disponible)">@nameof(item.Disponible)</label>
+                </div>
+                <div class="form-check form-switch">
+                    <InputCheckbox @bind-Value=@item.Disponible class="form-check-input" />
+                    <label for="@nameof(Libro.Disponible)">@nameof(item.Disponible)</label>
+                </div>
+
+
+                <InputRadioGroup @bind-Value=@item.Categoria>
+                    <label class="form-check-label" for="@nameof(Libro.Categoria)">@nameof(item.Categoria)</label>
+                    @foreach (var categoria in (CategoriaLibro[])Enum.GetValues(typeof(CategoriaLibro)))
+                    {
+                        <div class="form-check form-switch">
+                            <InputRadio Value="@categoria" class="form-check-input" />
+                            <label class="form-check-label">@categoria</label>
+                        </div>
+                    }
+                </InputRadioGroup>
+
+
+
+
+                <button type="submit" class="btn btn-primary mt-3">Enviar</button>
+            </EditForm>
+        }
+    </div>
+</div>
+
+@code {
+    string titulo = "Mi titulo";
+    Libro? item;
+
+    protected override void OnInitialized()
+    {
+        item = new Libro { Titulo = "El Quijote", Autor = "Cervantes"};
+    }
+
+    private void oninvalidform(EditContext context)
+    {
+        js.InvokeVoidAsync("window.alert", "Incorrecto");
+    }
+    private void onvalidsubmit(EditContext context)
+    {
+        js.InvokeVoidAsync("window.alert", "correcto");
+        StateHasChanged();
+    }
+    private void onsubmit(EditContext context)
+    {
+        var IsValid = context.Validate();
+        js.InvokeVoidAsync("window.alert", "No lo se");
+    }
+
+
+}

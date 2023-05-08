@@ -1,0 +1,59 @@
+﻿@page "/productos"
+@using BlazorApp.Moldels;
+@using BlazorApp.Services;
+@inject ProductsService servicioProductosClient
+<h1>Lista de productos</h1>
+
+<RadzenDataGrid AllowFiltering="true"
+                AllowGrouping="true" AllowPaging="true" PageSize="4" AllowSorting="true" AllowMultiColumnSorting="true"
+                ShowMultiColumnSortingIndex="true" AllowColumnResize="true" AllowColumnReorder="true" ColumnWidth="200px"
+                FilterMode="FilterMode.Simple" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                Data="@datos" TItem="ProductDTO" IsLoading=@isLoading>
+    <Columns>
+        <RadzenDataGridColumn TItem="ProductDTO" Property="id" Frozen=true Filterable=false Sortable=false Title="ID" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="image" Title="Imagen" Filterable=false Sortable=false Width="120px">
+            <Template Context="item">
+                <RadzenImage Path=@item.image class="img-fluid" widht="100px" />
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ProductDTO" Property="title" Title="Título" Width="160px" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="price" Title="Precio" Width="200px" FormatString="{0:c2}" TextAlign="TextAlign.Right" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="category" Title="Categoría" Width="160px" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="rating.rate" Title="Rate" Width="120px" />
+        <RadzenDataGridColumn TItem="ProductDTO" Property="rating" Title="Rate" Width="120px">
+            <Template Context="item">
+                <RadzenRating Value="@Convert.ToInt32(item.rating.rate)" ReadOnly=true />
+            </Template>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+
+
+@code {
+    List<ProductDTO> datos;
+    bool isLoading = false;
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+
+    }
+
+    protected async  override Task OnInitializedAsync()
+    {
+        isLoading = true;
+        string url = "https://fakestoreapi.com/products";
+        var result =  await servicioProductosClient.GetProductsAsync();
+        if (result != null)
+        {
+            datos = result;
+        }
+        else {
+            datos = new List<ProductDTO>();
+        }
+        isLoading = false;
+        
+    }
+
+}

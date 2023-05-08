@@ -1,0 +1,59 @@
+﻿@page "/libros"
+@using BlazorApp.Moldels;
+
+<h3>LibrosPage</h3>
+
+<RadzenDataGrid Data="@libros" TItem="Libro" FilterMode="FilterMode.Simple" AllowAlternatingRows="false" 
+            ColumnnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" AllowSorting="true" PageSize="10" isLoading>
+    <Columns>
+        <RadzenDataGridColumn TItem="Libro" Property="Titulo" Title="Título" />
+        <RadzenDataGridColumn TItem="Libro" Property="Autor" Title="Autor"  Width="160px"/>
+        <RadzenDataGridColumn TItem="Libro" Property="Precio" Title="Precio" Width="160px" FormatString="{0:c2}" TextAlign="TextAlign.Right" />
+        <RadzenDataGridColumn TItem="Libro" Property="Disponible" Title="Disponible" Width="120px">
+            <Template Context="libro">
+                    @if (libro.Disponible)
+                    {
+                        <div class="alert alert-success">Disponible</div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-danger">No Disponible</div>
+                    }
+            </Template>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="Libro" Property="FechaPublicacion" Title="Publicado" FormatString="{0:d}" Width="160px"/>
+    </Columns>
+    
+    
+</RadzenDataGrid>
+
+@code {
+    List<Libro>? libros;
+    bool IsLoading = false;
+
+    protected override Task OnParametersSetAsync()
+    {
+        return base.OnParametersSetAsync();
+
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
+    protected override void OnInitialized()
+    {
+        IsLoading = true;
+        libros = new List<Libro>();
+        for (int i = 1; i < 200;i++)
+        {
+            libros.Add(new Libro { Titulo = $"Libro {i}", Autor = $"Autor {i}", Precio = i, FechaPublicacion = DateTime.Now.AddDays(i) , Disponible = (i % 3==0)});
+        };
+        
+
+        
+    }
+
+}
